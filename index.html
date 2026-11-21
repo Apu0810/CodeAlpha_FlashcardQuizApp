@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f6fb">
+    <title>MemoLearn — Smart Flashcards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <a class="brand" href="#" aria-label="MemoLearn home">
+                <span class="brand-mark">m</span>
+                <span>memo<span class="brand-light">learn</span></span>
+            </a>
+
+            <p class="nav-label">WORKSPACE</p>
+            <nav class="side-nav" aria-label="Main navigation">
+                <button class="nav-item active" data-view="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
+                <button class="nav-item" data-view="study"><span class="nav-icon">▤</span>Study cards</button>
+                <button class="nav-item" data-view="library"><span class="nav-icon">▣</span>My library<span class="nav-count" id="navCardCount">0</span></button>
+                <button class="nav-item" data-view="quiz"><span class="nav-icon">✳</span>Quick quiz</button>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+            <div class="streak-card">
+                <div class="streak-icon">✦</div>
+                <div><strong><span id="streakCount">0</span> day streak</strong><small>Little by little, every day.</small></div>
+                <span class="streak-spark">↗</span>
+            </div>
+            <button class="nav-item settings-link" data-view="settings"><span class="nav-icon">⚙</span>Settings</button>
+            <div class="profile-row">
+                <div class="avatar">ML</div>
+                <div><strong>Apurva Dorugade</strong><small>Keep your momentum</small></div>
+                <span class="profile-more">•••</span>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <button class="mobile-menu icon-button" id="menuToggle" aria-label="Open navigation">☰</button>
+                <div class="breadcrumb"><span>Workspace</span><span class="breadcrumb-slash">/</span><strong id="pageTitle">Dashboard</strong></div>
+                <div class="topbar-actions">
+                    <span class="today-label" id="todayLabel"></span>
+                    <button class="icon-button theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
+                </div>
+            </header>
+
+            <div class="content">
+                <section class="view active" id="dashboardView">
+                    <div class="welcome-row">
+                        <div>
+                            <p class="eyebrow">YOUR LEARNING, AT A GLANCE</p>
+                            <h1>Good to see you, Apurva <span class="wave">✦</span></h1>
+                            <p class="muted">A few focused minutes today can make a big difference.</p>
+                        </div>
+                        <button class="button button-primary" data-go="study"><span>＋</span> Start studying</button>
+                    </div>
+
+                    <div class="stat-grid">
+                        <article class="stat-card"><div class="stat-top"><span>Total flashcards</span><span class="stat-icon violet">▤</span></div><strong id="totalCardsStat">0</strong><small><span class="stat-note">In your learning library</span></small></article>
+                        <article class="stat-card"><div class="stat-top"><span>Categories</span><span class="stat-icon blue">◈</span></div><strong id="categoriesStat">0</strong><small><span class="stat-note">Topics to explore</span></small></article>
+                        <article class="stat-card"><div class="stat-top"><span>Cards studied</span><span class="stat-icon green">✓</span></div><strong id="studiedStat">0</strong><small><span class="stat-note">Unique cards reviewed</span></small></article>
+                        <article class="stat-card"><div class="stat-top"><span>Quiz average</span><span class="stat-icon orange">↗</span></div><strong id="averageStat">—</strong><small><span class="stat-note"><span id="attemptsStat">0</span> quiz attempts</span></small></article>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <article class="panel progress-panel">
+                            <div class="panel-heading"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Daily learning goal</h2></div><span class="goal-badge" id="goalBadge">0 / 10 cards</span></div>
+                            <p class="muted panel-copy">Build a habit that sticks. Your progress is saved automatically.</p>
+                            <div class="progress-track"><div class="progress-fill" id="dailyProgress"></div></div>
+                            <div class="progress-caption"><span id="dailyProgressLabel">0% complete</span><button class="text-button" data-go="settings">Adjust goal</button></div>
+                            <div class="goal-foot"><span class="goal-check">✓</span><span id="goalEncouragement">Every card counts. You’ve got this!</span></div>
+                        </article>
+                        <article class="panel focus-panel">
+                            <div class="focus-decoration">✳</div>
+                            <p class="eyebrow">READY WHEN YOU ARE</p>
+                            <h2>Make today<br>count.</h2>
+                            <p>Pick up right where you left off with a quick study session.</p>
+                            <button class="button button-light" data-go="study">Continue learning <span>→</span></button>
+                        </article>
+                    </div>
+
+                    <div class="section-heading"><div><p class="eyebrow">PICK UP A TOPIC</p><h2>Your subjects</h2></div><button class="text-button" data-go="library">View all cards <span>→</span></button></div>
+                    <div class="category-grid" id="categoryGrid"></div>
+                    <div class="empty-state hidden" id="dashboardEmpty"><span class="empty-icon">✦</span><h3>Your next big idea starts here</h3><p>Add a flashcard to build your personal learning library.</p><button class="button button-primary" data-go="library">Create your first card</button></div>
+                </section>
+
+                <section class="view" id="studyView">
+                    <div class="page-intro"><div><p class="eyebrow">FOCUS MODE</p><h1>Study cards</h1><p class="muted">Take your time. Tap the card to reveal its answer.</p></div><button class="button button-secondary" id="shuffleBtn">⤨ <span>Shuffle</span></button></div>
+                    <div class="study-toolbar"><span class="study-position" id="studyPosition">Card 1 of 1</span><span class="category-pill" id="studyCategory">General</span><button class="text-button random-button" id="randomBtn">↗ Random card</button></div>
+                    <div class="study-stage">
+                        <button class="study-card" id="studyCard" aria-label="Reveal answer">
+                            <span class="card-side-label" id="cardSideLabel">QUESTION</span>
+                            <span class="study-question" id="studyQuestion"></span>
+                            <span class="study-answer hidden" id="studyAnswer"></span>
+                            <span class="flip-hint" id="flipHint">Tap anywhere to flip <span>↻</span></span>
+                        </button>
+                    </div>
+                    <div class="study-controls">
+                        <button class="button button-secondary" id="studyPrev">← Previous</button>
+                        <button class="button button-primary" id="revealBtn">Show answer <span>↻</span></button>
+                        <button class="button button-secondary" id="studyNext">Next →</button>
+                    </div>
+                    <div class="study-footer">
+                        <div class="difficulty-wrap"><span>How well did you know it?</span><div class="difficulty-actions"><button class="difficulty-btn difficult" data-difficulty="Difficult">Difficult</button><button class="difficulty-btn medium" data-difficulty="Medium">Medium</button><button class="difficulty-btn easy" data-difficulty="Easy">Easy</button></div></div>
+                        <div class="mini-progress"><div class="mini-progress-head"><span>Session progress</span><strong id="sessionProgressLabel">0%</strong></div><div class="progress-track"><div class="progress-fill" id="sessionProgress"></div></div><small class="session-count" id="sessionCount">0 of 0 reviewed · 0 remaining</small></div>
+                    </div>
+                    <div class="empty-state hidden" id="studyEmpty"><span class="empty-icon">▤</span><h3>No cards to study yet</h3><p>Add a few cards to start a focused session.</p><button class="button button-primary" data-go="library">Go to my library</button></div>
+                </section>
+
+                <section class="view" id="libraryView">
+                    <div class="page-intro"><div><p class="eyebrow">YOUR PERSONAL COLLECTION</p><h1>My library</h1><p class="muted">Create, organize, and revisit everything you’re learning.</p></div><span class="library-total" id="libraryTotal">0 cards</span></div>
+                    <div class="library-layout">
+                        <article class="panel editor-panel">
+                            <div class="panel-heading"><div><p class="eyebrow" id="formEyebrow">ADD SOMETHING NEW</p><h2 id="formTitle">Create a flashcard</h2></div><span class="editor-icon">＋</span></div>
+                            <form id="cardForm">
+                                <label for="questionInput">Question</label>
+                                <textarea id="questionInput" rows="3" maxlength="240" placeholder="What would you like to remember?" required></textarea>
+                                <label for="answerInput">Answer</label>
+                                <textarea id="answerInput" rows="4" maxlength="600" placeholder="Write a clear, memorable answer..." required></textarea>
+                                <label for="categoryInput">Category</label>
+                                <select id="categoryInput">
+                                    <option>HTML</option><option>CSS</option><option>JavaScript</option><option>Programming</option><option>General Knowledge</option><option>Other</option>
+                                </select>
+                                <div class="form-actions"><button class="button button-primary" id="saveCardBtn" type="submit">Add flashcard</button><button class="button button-quiet hidden" id="cancelEditBtn" type="button">Cancel</button></div>
+                            </form>
+                        </article>
+                        <div class="library-list-area">
+                            <div class="library-toolbar">
+                                <div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search your cards..." aria-label="Search flashcards"></div>
+                                <select id="filterCategory" aria-label="Filter by category"><option value="all">All topics</option></select>
+                            </div>
+                            <div class="flashcard-list" id="flashcardList"></div>
+                            <div class="empty-state hidden" id="libraryEmpty"><span class="empty-icon">⌕</span><h3>No cards found</h3><p>Try a different search or create your first flashcard.</p></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="view" id="quizView">
+                    <div class="page-intro"><div><p class="eyebrow">A LITTLE KNOWLEDGE CHECK</p><h1>Quick quiz</h1><p class="muted">See what’s sticking and celebrate your progress.</p></div></div>
+                    <div class="quiz-wrap">
+                        <div class="quiz-card panel" id="quizIntro">
+                            <div class="quiz-art">✳</div><p class="eyebrow">READY TO TEST YOURSELF?</p><h2>Make learning<br>stick for good.</h2>
+                            <p class="muted">A fresh mix of questions from your library. No pressure — every attempt helps you learn.</p>
+                            <div class="quiz-meta"><span>◷ About 2 minutes</span><span>✦ Up to 10 questions</span></div>
+                            <button class="button button-primary button-wide" id="startQuizBtn">Start a quiz <span>→</span></button>
+                        </div>
+                        <div class="quiz-card panel hidden" id="quizQuestionPanel">
+                            <div class="quiz-progress-row"><span id="quizQuestionCount">Question 1 of 10</span><span id="quizScore">0 correct</span></div>
+                            <div class="progress-track"><div class="progress-fill" id="quizProgress"></div></div>
+                            <p class="eyebrow quiz-category" id="quizCategory"></p>
+                            <h2 class="quiz-question" id="quizQuestion"></h2>
+                            <div class="quiz-options" id="quizOptions"></div>
+                            <div class="quiz-feedback hidden" id="quizFeedback" role="status"></div>
+                            <div class="quiz-bottom"><span id="quizTip">Choose the best answer</span><button class="button button-primary hidden" id="quizNextBtn">Next question →</button></div>
+                        </div>
+                        <div class="quiz-card panel hidden" id="quizResult">
+                            <div class="result-icon">✓</div><p class="eyebrow">SESSION COMPLETE</p><h2 id="resultTitle">Nicely done!</h2>
+                            <p class="result-score" id="resultScore">0<span>/ 0</span></p><p class="muted" id="resultMessage"></p>
+                            <div class="result-actions"><button class="button button-primary" id="restartQuizBtn">Try another quiz ↻</button><button class="button button-secondary" data-go="study">Study cards</button></div>
+                        </div>
+                        <div class="empty-state hidden" id="quizEmpty"><span class="empty-icon">✳</span><h3>Add cards to unlock quizzes</h3><p>Your quiz questions are created from your own flashcards.</p><button class="button button-primary" data-go="library">Create flashcards</button></div>
+                    </div>
+                </section>
+
+                <section class="view" id="settingsView">
+                    <div class="page-intro"><div><p class="eyebrow">MAKE IT YOURS</p><h1>Settings</h1><p class="muted">Set up your learning routine and manage your saved progress.</p></div></div>
+                    <div class="settings-grid">
+                        <article class="panel setting-panel"><div class="setting-icon violet">◎</div><div><h2>Daily learning goal</h2><p class="muted">Choose how many unique cards you’d like to study each day.</p><form class="goal-form" id="goalForm"><label for="goalInput">Cards per day</label><div class="goal-input-row"><input type="number" id="goalInput" min="1" max="100" required><button class="button button-primary" type="submit">Save goal</button></div></form></div></article>
+                        <article class="panel setting-panel"><div class="setting-icon orange">◷</div><div><h2>Your learning streak</h2><p class="muted">Study at least one card a day to keep your momentum going.</p><div class="setting-value"><strong id="settingsStreak">0 days</strong><span>Current streak</span></div></div></article>
+                        <article class="panel setting-panel danger-panel"><div class="setting-icon red">↺</div><div><h2>Reset learning progress</h2><p class="muted">Clear studied-card history, quiz scores, and your streak. Your flashcards will stay safe.</p><button class="button button-danger" id="resetProgressBtn">Reset progress</button></div></article>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+</body>
+</html>
